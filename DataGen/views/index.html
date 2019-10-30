@@ -1,1 +1,64 @@
-sender
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>数据设置</title>
+    <link href="stylesheets/bootstrap.css" rel="stylesheet">
+    <script src="javascripts/jquery.js"></script>
+    <script src="javascripts/bootstrap-treeview.js"></script>
+    <script>
+      $(document).ready(function(){
+        function jsonTree(data){
+          var result = [];
+          for(item in data){
+            var obj = {};
+            obj['text'] = item;
+            if (typeof data[item] === 'object'){
+              var nodes = jsonTree(data[item]);
+              if (nodes.length > 0)
+                obj['nodes'] = nodes;
+            } else {
+              obj['tags'] = [data[item] + ''];
+            }
+            result.push(obj);
+          }
+          return result;
+        }
+        function getTree() {
+          $.post("/", 
+            {
+              method: "getdata",
+            }, function(data){
+              if (data.result != true)
+                return;
+              $('#tree').treeview({
+                color: "#428bca",
+                expandIcon: 'glyphicon glyphicon-chevron-right',
+                collapseIcon: 'glyphicon glyphicon-chevron-down',
+                nodeIcon: 'glyphicon glyphicon-bookmark',
+                showTags: true,
+                data: jsonTree(data.data),
+                onNodeSelected: function(event, node) {
+                }
+              });
+            });
+        }
+        getTree();
+      });
+    </script>
+    <style>
+      #control{
+        position: absolute;
+        left: 350px;
+        right: 0px;
+        top: 0px;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tree" style="width: 300px; margin-left: 50px"></div>
+    <div id="control">
+      <h3 id="item"></h3>
+    </div>
+  </body>
+</html>

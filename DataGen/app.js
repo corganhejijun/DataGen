@@ -44,4 +44,6 @@ app.use(function(err, req, res, next) {
   res.send({result:false});
 });
 
+global.config = {time: 0, data: null};
+
 module.exports = app;
