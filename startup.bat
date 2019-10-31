@@ -1,0 +1,2 @@
+cd DataGen
+npm start
